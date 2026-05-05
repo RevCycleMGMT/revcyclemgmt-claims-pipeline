@@ -1,0 +1,18 @@
+[
+  {
+    "ts": "2026-05-05T00:00:00Z",
+    "event": "ingress_started",
+    "method": "sftp|s3|azure|bigquery|as2|api",
+    "transaction_type": "837P|837I|835|999|277CA|270|271|276|277",
+    "data_class": "synthetic",
+    "notes": "demo files only"
+  },
+  {
+    "ts": "2026-05-05T00:00:01Z",
+    "event": "validation_summary",
+    "status": "pending",
+    "claim_count": null,
+    "ack_count": null,
+    "remit_count": null
+  }
+]

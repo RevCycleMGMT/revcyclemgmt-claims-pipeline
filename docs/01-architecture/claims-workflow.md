@@ -21,8 +21,12 @@ This repository demonstrates the RevCycleMGMT claims workflow using synthetic X1
 
 ## Mart Outputs
 
-- `kpi_daily`: total claims, 837/835 volume, 999/277CA counts, denial rate, clean claim rate, and acknowledgment completion rate.
-- `claim_status`: one row per claim showing whether the claim has a 999 acknowledgment, 277CA acknowledgment, 835 remit, denial follow-up, and current workflow status.
+- `kpi_daily`: total claims, 837/835 volume, 999/277CA counts, denial rate, clean claim rate, acknowledgment completion rate, missing acknowledgments, payment variance, and workqueue volume.
+- `claim_status`: one row per claim showing whether the claim has a 999 acknowledgment, 277CA acknowledgment, 835 remit, denial follow-up, CARC/RARC root cause group, payment variance, and current workflow status.
+
+## Optional Interoperability Context
+
+The `interoperability` package is intentionally narrow. It can parse synthetic HL7 PID examples into masked claim-prep context so the demo can show how clinical or practice-management exports inform billing readiness. It does not move the repository into population health or general clinical analytics.
 
 ## Demo Transactions
 

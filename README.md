@@ -11,7 +11,9 @@ This repository is designed as a public RevCycleMGMT portfolio proof. It shows h
 - Clearinghouse visibility: acknowledgement tracking, route timing, and payer-response monitoring.
 - Revenue cycle model: `claims_header`, `claims_line`, `adjudication`, `payments`, `acknowledgments`, `claim_status`, and `kpi_daily`.
 - Denial intelligence: CARC/RARC fields mapped into follow-up-ready records.
-- Dashboard starter: claim volume, billed/allowed/paid amounts, remits, acknowledgments, and denial rate.
+- Dashboard starter: claim volume, billed/allowed/paid amounts, remits, acknowledgments, denial rate, payment variance, and claim workqueue export.
+- Secure ingress: SFTP, S3, Azure Blob, and BigQuery onboarding runbooks with evidence templates.
+- Interoperability bridge: synthetic HL7 PID helper for claim-prep context, masked by default for demo safety.
 - Traceability: deterministic hashes connect synthetic raw X12 snapshots to normalized rows.
 - Safety boundary: demo data only; no PHI, credentials, production claims, or customer data.
 
@@ -97,7 +99,8 @@ For a non-technical buyer, this demo proves the operating model:
 2. The pipeline saves a raw copy for traceability.
 3. The parser converts the files into clean operational tables.
 4. Acknowledgments, remits, payments, and denial signals are linked into one claim journey.
-5. A dashboard can show where claims are moving, stuck, denied, or paid.
+5. A dashboard can show where claims are moving, stuck, denied, underpaid, or paid.
+6. Intake runbooks show how a real engagement would be controlled before any production file is accepted.
 
 That is the RevCycleMGMT portfolio story: make the claims pipeline easier to see, control, and improve.
 
@@ -110,6 +113,7 @@ That is the RevCycleMGMT portfolio story: make the claims pipeline easier to see
 │   └── dashboard/               # Streamlit RCM dashboard
 ├── config/
 │   ├── .env.example             # environment template, no secrets
+│   ├── ingress/                 # secure ingress examples
 │   ├── pipeline.example.yml     # connection + routing shape
 │   └── mappings/carc_groups.csv # CARC to root cause mapping
 ├── database/
@@ -119,9 +123,11 @@ That is the RevCycleMGMT portfolio story: make the claims pipeline easier to see
 │   ├── 01-architecture/         # workflow architecture
 │   ├── 02-governance/           # safeguards and security boundaries
 │   ├── 03-website/              # portfolio card copy
-│   └── 04-runbooks/             # local demo and operations runbooks
+│   ├── 04-runbooks/             # local demo, secure ingress, evidence templates
+│   └── 05-migration/            # portfolio scope and disposition decisions
 ├── src/
 │   └── revcyclemgmt_claims/
+│       ├── interoperability/     # synthetic HL7/FHIR claim-prep helpers
 │       ├── parsers/             # X12 parser adapters
 │       └── pipelines/           # ingest, mart build, and utilities
 ├── tests/
@@ -158,6 +164,7 @@ Production use would require formal security review, BAAs where appropriate, pay
 - Prior authorization joins and payer lag benchmarking
 - Claim status workqueue filters for accepted, paid, denied, and waiting-for-remit claims
 - Dashboard screenshots and hosted synthetic demo walkthrough
+- Separate RevCycleMGMT-branded portfolio repositories for 835 reconciliation, acknowledgment monitoring, denial taxonomy, eligibility cache, and capability statement examples
 
 ---
 

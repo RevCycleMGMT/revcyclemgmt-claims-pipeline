@@ -20,12 +20,20 @@ def _unique_codes(series: pd.Series) -> str:
     return ",".join(codes)
 
 
+def _load_carc_groups(path: Path) -> dict[str, str]:
+    if not path.exists():
+        return {}
+    mapping = pd.read_csv(path, dtype=str).fillna("")
+    return dict(zip(mapping["CARC"].str.strip(), mapping["Group"].str.strip()))
+
+
 def build_claim_status_mart(
     claims: pd.DataFrame,
     lines: pd.DataFrame,
     adjud: pd.DataFrame,
     pays: pd.DataFrame,
     acks: pd.DataFrame,
+    carc_groups: dict[str, str] | None = None,
 ) -> pd.DataFrame:
     if claims.empty:
         return pd.DataFrame()
@@ -33,14 +41,17 @@ def build_claim_status_mart(
     claim_status = claims[["claim_id", "payer", "claim_type", "billed_amt"]].drop_duplicates("claim_id").copy()
 
     if not lines.empty:
+        line_aggs = {
+            "line_count": ("line_no", "count"),
+            "line_billed": ("billed", "sum"),
+            "line_allowed": ("allowed", "sum"),
+            "line_paid": ("paid", "sum"),
+        }
+        if "patient_resp" in lines.columns:
+            line_aggs["patient_resp_total"] = ("patient_resp", "sum")
         line_rollup = (
             lines.groupby("claim_id", as_index=False)
-            .agg(
-                line_count=("line_no", "count"),
-                line_billed=("billed", "sum"),
-                line_allowed=("allowed", "sum"),
-                line_paid=("paid", "sum"),
-            )
+            .agg(**line_aggs)
         )
         claim_status = claim_status.merge(line_rollup, on="claim_id", how="left")
 
@@ -54,12 +65,17 @@ def build_claim_status_mart(
     if not adjud.empty:
         adjud_work = adjud.copy()
         adjud_work["is_denial"] = adjud_work["status"].str.lower() != "paid"
+        group_map = carc_groups or {}
+        adjud_work["root_cause_group"] = (
+            adjud_work["CARC"].astype(str).str.strip().map(group_map).fillna("Unmapped")
+        )
         denial_rollup = (
             adjud_work.groupby("claim_id", as_index=False)
             .agg(
                 denial_count=("is_denial", "sum"),
                 carc_codes=("CARC", _unique_codes),
                 rarc_codes=("RARC", _unique_codes),
+                root_cause_groups=("root_cause_group", _unique_codes),
             )
         )
         claim_status = claim_status.merge(denial_rollup, on="claim_id", how="left")
@@ -77,11 +93,13 @@ def build_claim_status_mart(
         "line_billed": 0.0,
         "line_allowed": 0.0,
         "line_paid": 0.0,
+        "patient_resp_total": 0.0,
         "remittance_count": 0,
         "paid_amount": 0.0,
         "denial_count": 0,
         "carc_codes": "",
         "rarc_codes": "",
+        "root_cause_groups": "",
         "ack_999_status": "",
         "ack_277ca_status": "",
     }
@@ -93,6 +111,11 @@ def build_claim_status_mart(
     claim_status["has_999_ack"] = claim_status["ack_999_status"].astype(bool)
     claim_status["has_277ca_ack"] = claim_status["ack_277ca_status"].astype(bool)
     claim_status["has_835_remit"] = claim_status["remittance_count"].astype(int) > 0
+    claim_status["payment_variance"] = (
+        claim_status["line_allowed"].astype(float)
+        - claim_status["paid_amount"].astype(float)
+        - claim_status["patient_resp_total"].astype(float)
+    ).round(2)
 
     def workflow_status(row: pd.Series) -> str:
         if int(row["denial_count"]) > 0:
@@ -106,6 +129,11 @@ def build_claim_status_mart(
         return "waiting_for_ack"
 
     claim_status["workflow_status"] = claim_status.apply(workflow_status, axis=1)
+    claim_status["needs_workqueue_review"] = (
+        (claim_status["workflow_status"] != "paid_or_posted")
+        | (claim_status["denial_count"].astype(int) > 0)
+        | (claim_status["payment_variance"].astype(float) > 0)
+    )
     return claim_status
 
 
@@ -116,6 +144,8 @@ def main(warehouse: Path):
     adjud  = load_jsonl_dir(norm / "adjudication")
     pays   = load_jsonl_dir(norm / "payments")
     acks   = load_jsonl_dir(norm / "acknowledgments")
+    repo_root = Path(__file__).resolve().parents[3]
+    carc_groups = _load_carc_groups(repo_root / "config" / "mappings" / "carc_groups.csv")
 
     # Simple KPIs for demo
     if lines.empty:
@@ -127,7 +157,7 @@ def main(warehouse: Path):
         denial_count = int((adjud["status"].str.lower() != "paid").sum())
 
     total_claim_lines = int(lines["line_no"].count())
-    claim_status = build_claim_status_mart(claims, lines, adjud, pays, acks)
+    claim_status = build_claim_status_mart(claims, lines, adjud, pays, acks, carc_groups)
     total_claims = int(claims["claim_id"].nunique()) if not claims.empty else 0
     ack_complete = int((claim_status["has_999_ack"] & claim_status["has_277ca_ack"]).sum()) if not claim_status.empty else 0
     clean_claims = int(
@@ -153,6 +183,9 @@ def main(warehouse: Path):
         "claims_paid_or_posted": int((claim_status["workflow_status"] == "paid_or_posted").sum()) if not claim_status.empty else 0,
         "claims_waiting_for_remit": int((claim_status["workflow_status"] == "accepted_waiting_for_remit").sum()) if not claim_status.empty else 0,
         "claims_denied_follow_up": int((claim_status["workflow_status"] == "denied_follow_up").sum()) if not claim_status.empty else 0,
+        "claims_missing_ack": int((~claim_status["has_999_ack"] | ~claim_status["has_277ca_ack"]).sum()) if not claim_status.empty else 0,
+        "claims_needing_workqueue_review": int(claim_status["needs_workqueue_review"].sum()) if not claim_status.empty else 0,
+        "payment_variance_total": float(claim_status["payment_variance"].sum()) if not claim_status.empty else 0.0,
     }])
     out_dir = warehouse / "marts" / "rcm"
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -20,7 +20,7 @@ The claims pipeline should be easy to see, control, and improve. Revenue teams s
 
 ## Out Of Scope
 
-- HEDIS, Stars, NCQA quality-measure products.
+- General quality-measure products outside claims automation.
 - General healthcare compliance or quality consulting.
-- Federal teaming, PMO, or parent-company positioning.
+- Government contracting, PMO, or unrelated parent-company positioning.
 - Production PHI, real payer files, real clearinghouse credentials, or customer data.

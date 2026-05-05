@@ -7,15 +7,19 @@ CREATE TABLE IF NOT EXISTS claim_status (
   line_billed NUMERIC,
   line_allowed NUMERIC,
   line_paid NUMERIC,
+  patient_resp_total NUMERIC,
   remittance_count INTEGER,
   paid_amount NUMERIC,
   denial_count INTEGER,
   carc_codes TEXT,
   rarc_codes TEXT,
+  root_cause_groups TEXT,
   ack_999_status TEXT,
   ack_277ca_status TEXT,
   has_999_ack BOOLEAN,
   has_277ca_ack BOOLEAN,
   has_835_remit BOOLEAN,
-  workflow_status TEXT
+  payment_variance NUMERIC,
+  workflow_status TEXT,
+  needs_workqueue_review BOOLEAN
 );

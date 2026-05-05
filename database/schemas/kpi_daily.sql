@@ -1,7 +1,21 @@
 CREATE TABLE IF NOT EXISTS kpi_daily (
   as_of_date DATE DEFAULT CURRENT_DATE,
-  fpccr NUMERIC,
+  total_claims INTEGER,
+  total_claim_lines INTEGER,
+  total_billed NUMERIC,
+  total_allowed NUMERIC,
+  total_paid NUMERIC,
+  remittance_count INTEGER,
+  ack_999_count INTEGER,
+  ack_277ca_count INTEGER,
+  denial_count INTEGER,
   denial_rate NUMERIC,
-  dnar NUMERIC, -- days in AR (average)
-  payer_lag NUMERIC
+  ack_completion_rate NUMERIC,
+  clean_claim_rate NUMERIC,
+  claims_paid_or_posted INTEGER,
+  claims_waiting_for_remit INTEGER,
+  claims_denied_follow_up INTEGER,
+  claims_missing_ack INTEGER,
+  claims_needing_workqueue_review INTEGER,
+  payment_variance_total NUMERIC
 );

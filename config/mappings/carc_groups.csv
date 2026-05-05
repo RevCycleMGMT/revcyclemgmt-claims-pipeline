@@ -1,4 +1,5 @@
 CARC,Group,Reason
+45,Contractual Adjustment,Charge exceeds fee schedule or maximum allowable amount
 16,Info Missing,Claim lacks information
 18,Duplicate,Duplicate claim/service
 96,Auth,Authorization/Referral missing

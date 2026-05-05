@@ -1,0 +1,25 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RevCycleMGMTReadOnlyClaimIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<ACCOUNT_ID>:role/<REVCYCLEMGMT_READONLY_ROLE>"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<CUSTOMER_CLAIM_INGRESS_BUCKET>",
+        "arn:aws:s3:::<CUSTOMER_CLAIM_INGRESS_BUCKET>/*"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}
