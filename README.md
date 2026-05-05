@@ -165,6 +165,7 @@ Production use would require formal security review, BAAs where appropriate, pay
 - Claim status workqueue filters for accepted, paid, denied, and waiting-for-remit claims
 - Dashboard screenshots and hosted synthetic demo walkthrough
 - Separate RevCycleMGMT-branded portfolio repositories for 835 reconciliation, acknowledgment monitoring, denial taxonomy, eligibility cache, and capability statement examples
+- See `docs/06-portfolio/edi-x12-implementation-roadmap.md` for the proposed EDI/X12 implementation portfolio, including Optum-style clearinghouse API adapter planning.
 
 ---
 
