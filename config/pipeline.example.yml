@@ -1,0 +1,16 @@
+# Example pipeline configuration (rename to pipeline.yml and customize)
+sources:
+  - name: clearinghouse_primary
+    type: sftp
+    host: ${SFTP_HOST}
+    port: ${SFTP_PORT}
+    user: ${SFTP_USER}
+    key_path: ${SFTP_KEY_PATH}
+    inbox: /outgoing/claims
+    remits: /incoming/835
+routing:
+  # Configure payer-specific routes or use default primary
+  default: clearinghouse_primary
+  overrides: {}
+ack_sla_hours: 8
+warehouse_dir: ${WAREHOUSE_DIR}

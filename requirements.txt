@@ -1,0 +1,8 @@
+pandas>=2.2
+pyarrow>=16.0
+python-dotenv>=1.0
+typer>=0.12
+streamlit>=1.36
+# Optional adapters (uncomment one when you are ready)
+# pyx12==2.5.5
+# bots==3.2.1

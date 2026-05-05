@@ -1,0 +1,7 @@
+CARC,Group,Reason
+16,Info Missing,Claim lacks information
+18,Duplicate,Duplicate claim/service
+96,Auth,Authorization/Referral missing
+97,MedicalNecessity,Not medically necessary
+109,Coding,Claim not covered by this payer/contractor
+B7,Bundling,This provider not primary/claim bundled
