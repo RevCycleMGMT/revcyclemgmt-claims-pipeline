@@ -9,7 +9,7 @@ This repository is designed as a public RevCycleMGMT portfolio proof. It shows h
 ## Highlights
 - EDI/X12 scope: 837P/837I/835/999/277CA, with planned hooks for 270/271 and 276/277.
 - Clearinghouse visibility: acknowledgement tracking, route timing, and payer-response monitoring.
-- Revenue cycle model: `claims_header`, `claims_line`, `adjudication`, `payments`, `acknowledgments`, and `kpi_daily`.
+- Revenue cycle model: `claims_header`, `claims_line`, `adjudication`, `payments`, `acknowledgments`, `claim_status`, and `kpi_daily`.
 - Denial intelligence: CARC/RARC fields mapped into follow-up-ready records.
 - Dashboard starter: claim volume, billed/allowed/paid amounts, remits, acknowledgments, and denial rate.
 - Traceability: deterministic hashes connect synthetic raw X12 snapshots to normalized rows.
@@ -96,7 +96,7 @@ For a non-technical buyer, this demo proves the operating model:
 1. Claim-related X12 files land in a controlled inbox.
 2. The pipeline saves a raw copy for traceability.
 3. The parser converts the files into clean operational tables.
-4. Acknowledgments, remits, payments, and denial signals become visible.
+4. Acknowledgments, remits, payments, and denial signals are linked into one claim journey.
 5. A dashboard can show where claims are moving, stuck, denied, or paid.
 
 That is the RevCycleMGMT portfolio story: make the claims pipeline easier to see, control, and improve.
@@ -156,6 +156,7 @@ Production use would require formal security review, BAAs where appropriate, pay
 - Human-reviewed claim edit and denial follow-up workqueues
 - Payer companion-guide drift checks
 - Prior authorization joins and payer lag benchmarking
+- Claim status workqueue filters for accepted, paid, denied, and waiting-for-remit claims
 - Dashboard screenshots and hosted synthetic demo walkthrough
 
 ---

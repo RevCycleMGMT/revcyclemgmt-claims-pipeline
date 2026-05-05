@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS claim_status (
+  claim_id TEXT PRIMARY KEY,
+  payer TEXT,
+  claim_type TEXT,
+  billed_amt NUMERIC,
+  line_count INTEGER,
+  line_billed NUMERIC,
+  line_allowed NUMERIC,
+  line_paid NUMERIC,
+  remittance_count INTEGER,
+  paid_amount NUMERIC,
+  denial_count INTEGER,
+  carc_codes TEXT,
+  rarc_codes TEXT,
+  ack_999_status TEXT,
+  ack_277ca_status TEXT,
+  has_999_ack BOOLEAN,
+  has_277ca_ack BOOLEAN,
+  has_835_remit BOOLEAN,
+  workflow_status TEXT
+);

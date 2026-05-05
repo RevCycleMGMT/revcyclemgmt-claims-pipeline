@@ -37,3 +37,17 @@ def test_demo_pipeline_builds_rcm_kpi_mart(tmp_path):
     assert row["remittance_count"] == 1
     assert row["ack_999_count"] == 1
     assert row["ack_277ca_count"] == 1
+    assert row["ack_completion_rate"] == 1.0
+    assert row["clean_claim_rate"] == 1.0
+    assert row["claims_paid_or_posted"] == 1
+
+    claim_status_path = warehouse / "marts" / "rcm" / "claim_status.parquet"
+    assert claim_status_path.exists()
+
+    claim_status = pd.read_parquet(claim_status_path)
+    claim_row = claim_status.iloc[0].to_dict()
+    assert claim_row["claim_id"] == "CLM-DEMO-001"
+    assert bool(claim_row["has_999_ack"]) is True
+    assert bool(claim_row["has_277ca_ack"]) is True
+    assert bool(claim_row["has_835_remit"]) is True
+    assert claim_row["workflow_status"] == "paid_or_posted"

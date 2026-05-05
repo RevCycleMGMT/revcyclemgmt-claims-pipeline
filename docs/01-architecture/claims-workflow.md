@@ -8,8 +8,8 @@ This repository demonstrates the RevCycleMGMT claims workflow using synthetic X1
 2. `ingest_edi` saves a raw copy for traceability.
 3. Parser adapters convert the file type into normalized records.
 4. Normalized records are written as JSONL under `warehouse/normalized`.
-5. `build_marts` creates the dashboard-ready RCM KPI mart.
-6. The Streamlit dashboard reads `warehouse/marts/rcm/kpi_daily.parquet`.
+5. `build_marts` creates the dashboard-ready RCM KPI mart and claim journey mart.
+6. The Streamlit dashboard reads `warehouse/marts/rcm/kpi_daily.parquet` and `warehouse/marts/rcm/claim_status.parquet`.
 
 ## Normalized Domains
 
@@ -18,6 +18,11 @@ This repository demonstrates the RevCycleMGMT claims workflow using synthetic X1
 - `adjudication`
 - `payments`
 - `acknowledgments`
+
+## Mart Outputs
+
+- `kpi_daily`: total claims, 837/835 volume, 999/277CA counts, denial rate, clean claim rate, and acknowledgment completion rate.
+- `claim_status`: one row per claim showing whether the claim has a 999 acknowledgment, 277CA acknowledgment, 835 remit, denial follow-up, and current workflow status.
 
 ## Demo Transactions
 
