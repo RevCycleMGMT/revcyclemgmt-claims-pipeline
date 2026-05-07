@@ -64,20 +64,49 @@ def build_claim_status_mart(
 
     if not adjud.empty:
         adjud_work = adjud.copy()
+        for column, default in {
+            "allowed": 0.0,
+            "paid": 0.0,
+            "patient_resp": 0.0,
+            "CARC": "",
+            "RARC": "",
+            "status": "",
+        }.items():
+            if column not in adjud_work:
+                adjud_work[column] = default
+            adjud_work[column] = adjud_work[column].fillna(default)
         adjud_work["is_denial"] = adjud_work["status"].str.lower() != "paid"
         group_map = carc_groups or {}
         adjud_work["root_cause_group"] = (
             adjud_work["CARC"].astype(str).str.strip().map(group_map).fillna("Unmapped")
         )
-        denial_rollup = (
+        adjud_rollup = (
             adjud_work.groupby("claim_id", as_index=False)
             .agg(
-                denial_count=("is_denial", "sum"),
-                carc_codes=("CARC", _unique_codes),
-                rarc_codes=("RARC", _unique_codes),
-                root_cause_groups=("root_cause_group", _unique_codes),
+                adjud_allowed=("allowed", "sum"),
+                adjud_paid=("paid", "sum"),
+                adjud_patient_resp=("patient_resp", "sum"),
             )
         )
+        claim_status = claim_status.merge(adjud_rollup, on="claim_id", how="left")
+
+        denied_work = adjud_work[adjud_work["is_denial"]].copy()
+        if denied_work.empty:
+            denial_rollup = pd.DataFrame(columns=["claim_id", "denial_count", "carc_codes", "rarc_codes", "root_cause_groups"])
+        else:
+            denied_work["root_cause_group"] = denied_work["root_cause_group"].where(
+                denied_work["root_cause_group"].astype(bool),
+                "Unmapped",
+            )
+            denial_rollup = (
+                denied_work.groupby("claim_id", as_index=False)
+                .agg(
+                    denial_count=("is_denial", "sum"),
+                    carc_codes=("CARC", _unique_codes),
+                    rarc_codes=("RARC", _unique_codes),
+                    root_cause_groups=("root_cause_group", _unique_codes),
+                )
+            )
         claim_status = claim_status.merge(denial_rollup, on="claim_id", how="left")
 
     if not acks.empty:
@@ -94,6 +123,9 @@ def build_claim_status_mart(
         "line_allowed": 0.0,
         "line_paid": 0.0,
         "patient_resp_total": 0.0,
+        "adjud_allowed": 0.0,
+        "adjud_paid": 0.0,
+        "adjud_patient_resp": 0.0,
         "remittance_count": 0,
         "paid_amount": 0.0,
         "denial_count": 0,
@@ -108,8 +140,23 @@ def build_claim_status_mart(
             claim_status[column] = default
         claim_status[column] = claim_status[column].fillna(default)
 
+    claim_status["line_allowed"] = claim_status["adjud_allowed"].where(
+        claim_status["adjud_allowed"].astype(float) > 0,
+        claim_status["line_allowed"].astype(float),
+    )
+    claim_status["line_paid"] = claim_status["adjud_paid"].where(
+        claim_status["adjud_paid"].astype(float) > 0,
+        claim_status["line_paid"].astype(float),
+    )
+    claim_status["patient_resp_total"] = claim_status["adjud_patient_resp"].where(
+        claim_status["adjud_patient_resp"].astype(float) > 0,
+        claim_status["patient_resp_total"].astype(float),
+    )
+
     claim_status["has_999_ack"] = claim_status["ack_999_status"].astype(bool)
     claim_status["has_277ca_ack"] = claim_status["ack_277ca_status"].astype(bool)
+    claim_status["is_999_rejected"] = claim_status["ack_999_status"].astype(str).str.lower().str.contains("reject")
+    claim_status["is_277ca_rejected"] = claim_status["ack_277ca_status"].astype(str).str.lower().str.contains("reject")
     claim_status["has_835_remit"] = claim_status["remittance_count"].astype(int) > 0
     claim_status["payment_variance"] = (
         claim_status["line_allowed"].astype(float)
@@ -118,6 +165,10 @@ def build_claim_status_mart(
     ).round(2)
 
     def workflow_status(row: pd.Series) -> str:
+        if bool(row["is_999_rejected"]):
+            return "implementation_rejected"
+        if bool(row["is_277ca_rejected"]):
+            return "clearinghouse_rejected"
         if int(row["denial_count"]) > 0:
             return "denied_follow_up"
         if bool(row["has_835_remit"]):
@@ -165,14 +216,16 @@ def main(warehouse: Path):
             (claim_status["denial_count"].astype(int) == 0)
             & (claim_status["has_999_ack"])
             & (claim_status["has_277ca_ack"])
+            & (~claim_status["is_999_rejected"])
+            & (~claim_status["is_277ca_rejected"])
         ).sum()
     ) if not claim_status.empty else 0
     kpi = pd.DataFrame([{
         "total_claims": total_claims,
         "total_claim_lines": total_claim_lines,
-        "total_billed": float(lines["billed"].sum()),
-        "total_allowed": float(lines["allowed"].sum()),
-        "total_paid": float(lines["paid"].sum()),
+        "total_billed": float(claims["billed_amt"].sum()) if not claims.empty else float(lines["billed"].sum()),
+        "total_allowed": float(claim_status["line_allowed"].sum()) if not claim_status.empty else float(lines["allowed"].sum()),
+        "total_paid": float(claim_status["paid_amount"].sum()) if not claim_status.empty else float(lines["paid"].sum()),
         "remittance_count": int(len(pays)),
         "ack_999_count": int((acks["ack_type"] == "999").sum()) if not acks.empty else 0,
         "ack_277ca_count": int((acks["ack_type"] == "277CA").sum()) if not acks.empty else 0,
@@ -183,6 +236,8 @@ def main(warehouse: Path):
         "claims_paid_or_posted": int((claim_status["workflow_status"] == "paid_or_posted").sum()) if not claim_status.empty else 0,
         "claims_waiting_for_remit": int((claim_status["workflow_status"] == "accepted_waiting_for_remit").sum()) if not claim_status.empty else 0,
         "claims_denied_follow_up": int((claim_status["workflow_status"] == "denied_follow_up").sum()) if not claim_status.empty else 0,
+        "claims_clearinghouse_rejected": int((claim_status["workflow_status"] == "clearinghouse_rejected").sum()) if not claim_status.empty else 0,
+        "claims_implementation_rejected": int((claim_status["workflow_status"] == "implementation_rejected").sum()) if not claim_status.empty else 0,
         "claims_missing_ack": int((~claim_status["has_999_ack"] | ~claim_status["has_277ca_ack"]).sum()) if not claim_status.empty else 0,
         "claims_needing_workqueue_review": int(claim_status["needs_workqueue_review"].sum()) if not claim_status.empty else 0,
         "payment_variance_total": float(claim_status["payment_variance"].sum()) if not claim_status.empty else 0.0,

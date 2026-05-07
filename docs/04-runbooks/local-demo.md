@@ -31,13 +31,22 @@ streamlit run apps/dashboard/rcm_app.py
 
 The synthetic demo currently produces:
 
-- `total_claims`: 1
-- `total_claim_lines`: 2
-- `remittance_count`: 1
-- `ack_999_count`: 1
-- `ack_277ca_count`: 1
-- `denial_rate`: 0.0
-- `payment_variance_total`: 0.0
-- `claims_needing_workqueue_review`: 0
+- `total_claims`: 3
+- `total_claim_lines`: 4
+- `remittance_count`: 2
+- `ack_999_count`: 3
+- `ack_277ca_count`: 3
+- `clean_claim_rate`: about 0.33
+- `claims_paid_or_posted`: 1
+- `claims_clearinghouse_rejected`: 1
+- `claims_denied_follow_up`: 1
+- `payment_variance_total`: 300.0
+- `claims_needing_workqueue_review`: 2
 
-The demo workqueue is expected to stay clear because the sample remit balances after patient responsibility is considered. In a real implementation, non-zero variance rows would route to posting, contractual-adjustment review, or payer follow-up depending on the source policy.
+The demo intentionally does not stay clean. A startup practice needs to see both success and failure paths:
+
+- one claim that reaches payment visibility,
+- one claim rejected in the clearinghouse response flow,
+- and one claim denied at remit/adjudication with CARC 16.
+
+In a real implementation, rejected and denied rows would route to billing, coding, documentation, eligibility, payer follow-up, or posting review depending on source policy.

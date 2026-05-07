@@ -2,7 +2,7 @@
 
 ## Mission
 
-RevCycleMGMT helps healthcare organizations move claims from clinical and billing source data to cleaner payer-ready transactions, clearer clearinghouse responses, and faster payment visibility.
+RevCycleMGMT helps startup and independent healthcare practices move claims from clinical and billing source data to cleaner payer-ready transactions, clearer clearinghouse responses, and faster payment visibility.
 
 ## Vision
 
@@ -17,6 +17,7 @@ The claims pipeline should be easy to see, control, and improve. Revenue teams s
 - CARC/RARC denial pattern capture.
 - Clearinghouse submission, rejection, routing, and payer-response visibility.
 - Dashboard-ready RCM metrics and workqueue-ready outputs.
+- Fractional revenue operations handoff for clinician founders before a full revenue team is hired.
 
 ## Out Of Scope
 

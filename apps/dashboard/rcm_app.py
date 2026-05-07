@@ -5,7 +5,7 @@ from pathlib import Path
 st.set_page_config(page_title="RevCycleMGMT Claims Pipeline", layout="wide")
 
 st.title("RevCycleMGMT Claims Pipeline")
-st.caption("Synthetic EDI/X12 demo: 837 intake, 999/277CA acknowledgments, 835 remits, denial follow-up, and payment visibility.")
+st.caption("Synthetic revenue launch demo: 837 intake, 999/277CA acknowledgments, 835 remits, clearinghouse rejection, denial follow-up, and payment visibility.")
 warehouse = Path(st.secrets.get("WAREHOUSE_DIR", "warehouse"))
 kpi_path = warehouse / "marts" / "rcm" / "kpi_daily.parquet"
 claim_status_path = warehouse / "marts" / "rcm" / "claim_status.parquet"
@@ -16,23 +16,25 @@ else:
     st.warning("No KPI mart found — run build_marts.py first. Showing demo data.")
     df = pd.DataFrame([
         {
-            "total_claims": 1,
-            "total_claim_lines": 2,
-            "total_billed": 250.0,
-            "total_allowed": 200.0,
-            "total_paid": 160.0,
-            "remittance_count": 1,
-            "ack_999_count": 1,
-            "ack_277ca_count": 1,
-            "denial_rate": 0.0,
+            "total_claims": 3,
+            "total_claim_lines": 4,
+            "total_billed": 705.0,
+            "total_allowed": 485.0,
+            "total_paid": 148.0,
+            "remittance_count": 2,
+            "ack_999_count": 3,
+            "ack_277ca_count": 3,
+            "denial_rate": 0.5,
             "ack_completion_rate": 1.0,
-            "clean_claim_rate": 1.0,
+            "clean_claim_rate": 0.3333,
             "claims_paid_or_posted": 1,
             "claims_waiting_for_remit": 0,
-            "claims_denied_follow_up": 0,
+            "claims_denied_follow_up": 1,
+            "claims_clearinghouse_rejected": 1,
+            "claims_implementation_rejected": 0,
             "claims_missing_ack": 0,
-            "claims_needing_workqueue_review": 0,
-            "payment_variance_total": 0.0,
+            "claims_needing_workqueue_review": 2,
+            "payment_variance_total": 300.0,
         }
     ])
 
@@ -48,6 +50,11 @@ ops[1].metric("277CA ACKs", int(df["ack_277ca_count"].sum()))
 ops[2].metric("835 Remits", int(df["remittance_count"].sum()))
 ops[3].metric("Missing ACK", int(df["claims_missing_ack"].sum()))
 ops[4].metric("Workqueue", int(df["claims_needing_workqueue_review"].sum()))
+
+queues = st.columns(3)
+queues[0].metric("Paid / Posted", int(df["claims_paid_or_posted"].sum()))
+queues[1].metric("277CA Rejected", int(df.get("claims_clearinghouse_rejected", pd.Series([0])).sum()))
+queues[2].metric("Denied Follow-up", int(df["claims_denied_follow_up"].sum()))
 
 rates = st.columns(3)
 rates[0].metric("Denial Rate", f"{round(float(df['denial_rate'].mean()) * 100, 2)}%")

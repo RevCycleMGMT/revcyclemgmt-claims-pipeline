@@ -1,8 +1,8 @@
 # RevCycleMGMT Claims Pipeline
 
-Synthetic, local-first reference pipeline for revenue cycle claims workflows: 837 claim intake, 999/277CA clearinghouse acknowledgments, 835 remittance reconciliation, CARC/RARC denial patterns, and dashboard-ready RCM metrics.
+Synthetic, local-first reference pipeline for startup-practice revenue cycle workflows: 837 claim intake, 999/277CA clearinghouse acknowledgments, 835 remittance reconciliation, CARC/RARC denial patterns, and dashboard-ready RCM metrics.
 
-This repository is designed as a public RevCycleMGMT portfolio proof. It shows how the claims workflow can be organized without using production claims, patient records, PHI, payer credentials, or clearinghouse credentials.
+This repository is designed as a public RevCycleMGMT portfolio proof. It shows how a clinician founder's first revenue operating layer can be organized without using production claims, patient records, PHI, payer credentials, or clearinghouse credentials.
 
 ---
 
@@ -15,6 +15,7 @@ This repository is designed as a public RevCycleMGMT portfolio proof. It shows h
 - Secure ingress: SFTP, S3, Azure Blob, and BigQuery onboarding runbooks with evidence templates.
 - Interoperability bridge: synthetic HL7 PID helper for claim-prep context, masked by default for demo safety.
 - Traceability: deterministic hashes connect synthetic raw X12 snapshots to normalized rows.
+- Startup launch scenario: one paid claim, one clearinghouse rejection, and one denial/remit follow-up path.
 - Safety boundary: demo data only; no PHI, credentials, production claims, or customer data.
 
 ---
@@ -89,7 +90,13 @@ python -m revcyclemgmt_claims.pipelines.build_marts --warehouse warehouse
 streamlit run apps/dashboard/rcm_app.py
 ```
 
-The demo parser recognizes the sample 837, 835, 999, and 277CA-style files and emits synthetic normalized records. Real production use would replace the adapter in `parsers/` with a validated X12 translator such as `pyx12`, Bots, or an enterprise EDI parser.
+The demo parser recognizes the sample 837, 835, 999, and 277CA-style files and emits synthetic normalized records. The current launch scenario demonstrates three different outcomes:
+
+1. `CLM-LAUNCH-001` moves cleanly from 837 to 999/277CA to 835 payment visibility.
+2. `CLM-LAUNCH-002` is rejected at the 277CA stage and routes to clearinghouse follow-up.
+3. `CLM-LAUNCH-003` reaches the remit stage but is denied with CARC 16 and routes to denial follow-up.
+
+Real production use would replace the adapter in `parsers/` with a validated X12 translator such as `pyx12`, Bots, or an enterprise EDI parser.
 
 ## What This Proves
 
@@ -99,7 +106,7 @@ For a non-technical buyer, this demo proves the operating model:
 2. The pipeline saves a raw copy for traceability.
 3. The parser converts the files into clean operational tables.
 4. Acknowledgments, remits, payments, and denial signals are linked into one claim journey.
-5. A dashboard can show where claims are moving, stuck, denied, underpaid, or paid.
+5. A dashboard can show which claims are paid, rejected, denied, waiting, or ready for follow-up.
 6. Intake runbooks show how a real engagement would be controlled before any production file is accepted.
 
 That is the RevCycleMGMT portfolio story: make the claims pipeline easier to see, control, and improve.
