@@ -8,6 +8,7 @@ from revcyclemgmt_claims.parsers.x12_pyx12_adapter import parse_x12_to_dicts
 from revcyclemgmt_claims.pipelines.build_marts import build_claim_status_mart
 from revcyclemgmt_claims.pipelines.build_marts import main as build_marts_main
 from revcyclemgmt_claims.pipelines.ingest_edi import main as ingest_main
+from revcyclemgmt_claims.pipelines.proof_artifacts import run as proof_artifacts_run
 
 
 def test_parser_recognizes_claim_remit_and_ack_files():
@@ -82,6 +83,32 @@ def test_demo_pipeline_builds_rcm_kpi_mart(tmp_path):
     assert denied["payment_variance"] == 300.0
     assert denied["workflow_status"] == "denied_follow_up"
     assert bool(denied["needs_workqueue_review"]) is True
+
+
+def test_demo_pipeline_builds_public_proof_artifacts(tmp_path):
+    repo_root = Path(__file__).resolve().parents[1]
+    inbox = repo_root / "tests" / "sample_data"
+    warehouse = tmp_path / "warehouse"
+    output_dir = tmp_path / "output_demo"
+
+    ingest_main(inbox, warehouse)
+    build_marts_main(warehouse)
+    result = proof_artifacts_run(warehouse, output_dir)
+
+    assert result["total_claims"] == 3
+    assert result["workqueue"] == 2
+    assert result["artifact_count"] == 2
+
+    summary_path = output_dir / "claims_pipeline_summary.json"
+    svg_path = output_dir / "claims_pipeline_map.svg"
+    assert summary_path.exists()
+    assert svg_path.exists()
+
+    svg = svg_path.read_text(encoding="utf-8")
+    assert "837P to payment visibility" in svg
+    assert "CLM-LAUNCH-002" in svg
+    assert "277CA rejection" in svg
+    assert "without public PHI" in svg
 
 
 def test_claim_status_mart_flags_denials_and_missing_acks():

@@ -4,6 +4,8 @@ Synthetic, local-first reference pipeline for startup-practice revenue cycle wor
 
 This repository is designed as a public RevCycleMGMT portfolio proof. It shows how a clinician founder's first revenue operating layer can be organized without using production claims, patient records, PHI, payer credentials, or clearinghouse credentials.
 
+![RevCycleMGMT synthetic claims pipeline proof](docs/assets/claims-pipeline-map.svg)
+
 ---
 
 ## Highlights
@@ -16,9 +18,28 @@ This repository is designed as a public RevCycleMGMT portfolio proof. It shows h
 - Interoperability bridge: synthetic HL7 PID helper for claim-prep context, masked by default for demo safety.
 - Traceability: deterministic hashes connect synthetic raw X12 snapshots to normalized rows.
 - Startup launch scenario: one paid claim, one clearinghouse rejection, and one denial/remit follow-up path.
+- Generated visual proof: a GitHub-rendered SVG claim journey built from the demo mart outputs.
 - Safety boundary: demo data only; no PHI, credentials, production claims, or customer data.
 
 ---
+
+## Visual Proof Artifact
+
+The README visual above is generated from the same synthetic ETL run described in the quickstart. It is not a static marketing screenshot. The proof artifact shows exactly what a buyer needs to understand first:
+
+| Visual lane | What it proves |
+| --- | --- |
+| KPI cards | The batch volume, billed amount, paid amount, payment variance, clean-claim rate, and acknowledgment completion are calculated from demo marts. |
+| Pipeline movement | The synthetic batch moves from 837P claim build to 999, 277CA, 835, payment posting, and workqueue routing. |
+| Claim journey table | One claim is paid, one is rejected by 277CA, and one reaches denial follow-up with CARC 16. |
+| Executive readout | The output translates technical X12 events into a plain operating summary for a clinician founder or revenue lead. |
+
+Regenerate it locally after running the ETL:
+
+```bash
+python -m revcyclemgmt_claims.pipelines.proof_artifacts --warehouse warehouse --out output_demo
+cp output_demo/claims_pipeline_map.svg docs/assets/claims-pipeline-map.svg
+```
 
 ## Architecture
 
@@ -85,6 +106,7 @@ pip install -e .
 # 3) Run the demo ETL on sample files
 python -m revcyclemgmt_claims.pipelines.ingest_edi --inbox tests/sample_data --warehouse warehouse
 python -m revcyclemgmt_claims.pipelines.build_marts --warehouse warehouse
+python -m revcyclemgmt_claims.pipelines.proof_artifacts --warehouse warehouse --out output_demo
 
 # 4) Launch the dashboard
 streamlit run apps/dashboard/rcm_app.py
@@ -113,6 +135,16 @@ That is the RevCycleMGMT portfolio story: make the claims pipeline easier to see
 
 ---
 
+## Generated Artifacts
+
+| Artifact | Purpose |
+| --- | --- |
+| `output_demo/claims_pipeline_summary.json` | Buyer-readable synthetic proof model with metrics, stage counts, claim journey rows, and executive readout. |
+| `output_demo/claims_pipeline_map.svg` | Generated native SVG proof artifact from the demo marts. |
+| `docs/assets/claims-pipeline-map.svg` | README-facing copy of the generated SVG. |
+
+---
+
 ## Repository layout
 ```
 .
@@ -131,12 +163,14 @@ That is the RevCycleMGMT portfolio story: make the claims pipeline easier to see
 │   ├── 02-governance/           # safeguards and security boundaries
 │   ├── 03-website/              # portfolio card copy
 │   ├── 04-runbooks/             # local demo, secure ingress, evidence templates
-│   └── 05-migration/            # portfolio scope and disposition decisions
+│   ├── 05-migration/            # portfolio scope and disposition decisions
+│   └── assets/                  # README-rendered proof SVG
+├── output_demo/                 # generated synthetic proof artifacts
 ├── src/
 │   └── revcyclemgmt_claims/
 │       ├── interoperability/     # synthetic HL7/FHIR claim-prep helpers
 │       ├── parsers/             # X12 parser adapters
-│       └── pipelines/           # ingest, mart build, and utilities
+│       └── pipelines/           # ingest, mart build, proof artifacts, utilities
 ├── tests/
 │   ├── test_mapping.py
 │   └── sample_data/             # tiny fake 837/835/ACKs

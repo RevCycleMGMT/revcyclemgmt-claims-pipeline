@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820" role="img" aria-labelledby="title desc">
+  <title id="title">RevCycleMGMT synthetic claims pipeline proof</title>
+  <desc id="desc">Synthetic 837P, 999, 277CA, 835, payment, denial, and workqueue pipeline proof.</desc>
+  <defs>
+    <radialGradient id="tealGlow" cx="18%" cy="6%" r="68%">
+      <stop offset="0%" stop-color="#83f7f4" stop-opacity=".17"/>
+      <stop offset="58%" stop-color="#00B3A4" stop-opacity=".06"/>
+      <stop offset="100%" stop-color="#020607" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="0" x2="1">
+      <stop offset="0%" stop-color="#071012" stop-opacity=".98"/>
+      <stop offset="100%" stop-color="#0b1416" stop-opacity=".88"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      .title { font: 900 42px Inter, Arial, sans-serif; fill: #f8fafc; }
+      .subtitle { font: 500 18px Inter, Arial, sans-serif; fill: #cbd5e1; }
+      .kicker { font: 900 12px Inter, Arial, sans-serif; fill: #83f7f4; letter-spacing: .12em; text-transform: uppercase; }
+      .metric { font: 900 30px Inter, Arial, sans-serif; fill: #ffffff; }
+      .metric-small { font: 900 26px Inter, Arial, sans-serif; fill: #ffffff; }
+      .node-number { font: 900 18px Inter, Arial, sans-serif; fill: #031719; }
+      .small { font: 700 15px Inter, Arial, sans-serif; fill: #d9fffd; }
+      .tiny { font: 600 12px Inter, Arial, sans-serif; fill: #cbd5e1; }
+      .muted { font: 600 12px Inter, Arial, sans-serif; fill: #94a3b8; }
+      .readout { font: 700 17px Inter, Arial, sans-serif; fill: #e2e8f0; }
+      .strong { font-weight: 900; fill: #f8fafc; }
+    </style>
+  </defs>
+  <rect width="1280" height="820" fill="#020607"/>
+  <rect width="1280" height="820" fill="url(#tealGlow)"/>
+  <path d="M0 740 C160 670 300 802 490 736 C690 666 840 786 1068 724 C1186 692 1230 700 1280 660 L1280 820 L0 820 Z" fill="#00B3A4" opacity=".06"/>
+  <rect x="28" y="28" width="1224" height="764" rx="18" fill="url(#panel)" stroke="#164e53"/>
+  <text x="56" y="78" class="kicker">Synthetic Claims Pipeline Proof</text>
+  <text x="56" y="124" class="title">837P to payment visibility, without public PHI.</text>
+  <text x="56" y="154" class="subtitle">A tiny startup-practice batch shows one paid claim, one clearinghouse rejection, and one denial follow-up path.</text>
+  <g filter="url(#glow)">
+    <circle cx="1178" cy="84" r="7" fill="#83f7f4"/>
+    <circle cx="1204" cy="84" r="7" fill="#00B3A4"/>
+    <circle cx="1230" cy="84" r="7" fill="#facc15"/>
+  </g>
+  
+      <g>
+        <rect x="46" y="156" width="178" height="104" rx="10" fill="#081012" stroke="#164e53"/>
+        <text x="62" y="184" class="kicker">Claims</text>
+        <text x="62" y="218" class="metric">3</text>
+        <text x="62" y="242" class="muted">837P batch</text>
+      </g>
+    
+
+      <g>
+        <rect x="242" y="156" width="178" height="104" rx="10" fill="#081012" stroke="#164e53"/>
+        <text x="258" y="184" class="kicker">Billed</text>
+        <text x="258" y="218" class="metric">$705</text>
+        <text x="258" y="242" class="muted">synthetic dollars</text>
+      </g>
+    
+
+      <g>
+        <rect x="438" y="156" width="178" height="104" rx="10" fill="#081012" stroke="#164e53"/>
+        <text x="454" y="184" class="kicker">Paid</text>
+        <text x="454" y="218" class="metric">$148</text>
+        <text x="454" y="242" class="muted">835 visibility</text>
+      </g>
+    
+
+      <g>
+        <rect x="634" y="156" width="178" height="104" rx="10" fill="#081012" stroke="#164e53"/>
+        <text x="650" y="184" class="kicker">Variance</text>
+        <text x="650" y="218" class="metric">$300</text>
+        <text x="650" y="242" class="muted">cash risk</text>
+      </g>
+    
+
+      <g>
+        <rect x="830" y="156" width="178" height="104" rx="10" fill="#081012" stroke="#164e53"/>
+        <text x="846" y="184" class="kicker">Clean Claim</text>
+        <text x="846" y="218" class="metric">33.3%</text>
+        <text x="846" y="242" class="muted">launch quality</text>
+      </g>
+    
+
+      <g>
+        <rect x="1026" y="156" width="178" height="104" rx="10" fill="#081012" stroke="#164e53"/>
+        <text x="1042" y="184" class="kicker">ACK Complete</text>
+        <text x="1042" y="218" class="metric">100.0%</text>
+        <text x="1042" y="242" class="muted">999 + 277CA</text>
+      </g>
+    
+  <rect x="46" y="292" width="1188" height="192" rx="14" fill="#061012" stroke="#164e53"/>
+  <text x="68" y="316" class="kicker">Pipeline Movement</text>
+  
+      <g>
+        <circle cx="150" cy="334" r="24" fill="#00B3A4" opacity=".95"/>
+        <text x="150" y="340" class="node-number" text-anchor="middle">1</text>
+        <rect x="56" y="372" width="188" height="90" rx="10" fill="#061012" stroke="#164e53"/>
+        <text x="74" y="400" class="small strong">837P claim build</text>
+        <text x="74" y="426" class="metric-small">3</text>
+        <text x="74" y="448" class="tiny">Synthetic claims leave launch.</text>
+      </g>
+    <path d="M182 334 L314 334" stroke="#83f7f4" stroke-width="5" stroke-linecap="round" opacity=".72"/>
+      <g>
+        <circle cx="346" cy="334" r="24" fill="#00B3A4" opacity=".95"/>
+        <text x="346" y="340" class="node-number" text-anchor="middle">2</text>
+        <rect x="252" y="372" width="188" height="90" rx="10" fill="#061012" stroke="#164e53"/>
+        <text x="270" y="400" class="small strong">999 accepted</text>
+        <text x="270" y="426" class="metric-small">3</text>
+        <text x="270" y="448" class="tiny">Implementation ACK visible.</text>
+      </g>
+    <path d="M378 334 L510 334" stroke="#83f7f4" stroke-width="5" stroke-linecap="round" opacity=".72"/>
+      <g>
+        <circle cx="542" cy="334" r="24" fill="#00B3A4" opacity=".95"/>
+        <text x="542" y="340" class="node-number" text-anchor="middle">3</text>
+        <rect x="448" y="372" width="188" height="90" rx="10" fill="#061012" stroke="#164e53"/>
+        <text x="466" y="400" class="small strong">277CA accepted</text>
+        <text x="466" y="426" class="metric-small">2</text>
+        <text x="466" y="448" class="tiny">Rejection separated early.</text>
+      </g>
+    <path d="M574 334 L706 334" stroke="#83f7f4" stroke-width="5" stroke-linecap="round" opacity=".72"/>
+      <g>
+        <circle cx="738" cy="334" r="24" fill="#00B3A4" opacity=".95"/>
+        <text x="738" y="340" class="node-number" text-anchor="middle">4</text>
+        <rect x="644" y="372" width="188" height="90" rx="10" fill="#061012" stroke="#164e53"/>
+        <text x="662" y="400" class="small strong">835 remit seen</text>
+        <text x="662" y="426" class="metric-small">2</text>
+        <text x="662" y="448" class="tiny">Remit and denial linked.</text>
+      </g>
+    <path d="M770 334 L902 334" stroke="#83f7f4" stroke-width="5" stroke-linecap="round" opacity=".72"/>
+      <g>
+        <circle cx="934" cy="334" r="24" fill="#00B3A4" opacity=".95"/>
+        <text x="934" y="340" class="node-number" text-anchor="middle">5</text>
+        <rect x="840" y="372" width="188" height="90" rx="10" fill="#061012" stroke="#164e53"/>
+        <text x="858" y="400" class="small strong">Paid / posted</text>
+        <text x="858" y="426" class="metric-small">1</text>
+        <text x="858" y="448" class="tiny">Clean claim paid.</text>
+      </g>
+    <path d="M966 334 L1098 334" stroke="#83f7f4" stroke-width="5" stroke-linecap="round" opacity=".72"/>
+      <g>
+        <circle cx="1130" cy="334" r="24" fill="#00B3A4" opacity=".95"/>
+        <text x="1130" y="340" class="node-number" text-anchor="middle">6</text>
+        <rect x="1036" y="372" width="188" height="90" rx="10" fill="#061012" stroke="#164e53"/>
+        <text x="1054" y="400" class="small strong">Workqueue</text>
+        <text x="1054" y="426" class="metric-small">2</text>
+        <text x="1054" y="448" class="tiny">Owner-ready follow-up.</text>
+      </g>
+    
+  <rect x="46" y="498" width="1188" height="196" rx="14" fill="#061012" stroke="#164e53"/>
+  
+      <text x="106" y="526" class="kicker">Claim Journey</text>
+      <text x="342" y="526" class="tiny strong">999</text>
+      <text x="486" y="526" class="tiny strong">277CA</text>
+      <text x="650" y="526" class="tiny strong">835</text>
+      <text x="786" y="526" class="tiny strong">CARC</text>
+      <text x="920" y="526" class="tiny strong">Variance</text>
+      <text x="1086" y="526" class="tiny strong">Review</text>
+    
+  
+      <g>
+        <rect x="58" y="546" width="1164" height="50" rx="9" fill="#081012" stroke="#173f43"/>
+        <circle cx="84" cy="571" r="7" fill="#83f7f4"/>
+        <text x="106" y="567" class="small strong">CLM-LAUNCH-001</text>
+        <text x="106" y="585" class="tiny">Paid / posted</text>
+        <text x="342" y="577" class="small">Accepted</text>
+        <text x="486" y="577" class="small">Accepted</text>
+        <text x="650" y="577" class="small">Yes</text>
+        <text x="786" y="577" class="small">-</text>
+        <text x="920" y="577" class="small">$0</text>
+        <text x="1086" y="577" class="small">No</text>
+      </g>
+    
+
+      <g>
+        <rect x="58" y="604" width="1164" height="50" rx="9" fill="#081012" stroke="#173f43"/>
+        <circle cx="84" cy="629" r="7" fill="#facc15"/>
+        <text x="106" y="625" class="small strong">CLM-LAUNCH-002</text>
+        <text x="106" y="643" class="tiny">277CA rejection</text>
+        <text x="342" y="635" class="small">Accepted</text>
+        <text x="486" y="635" class="small">Rejected</text>
+        <text x="650" y="635" class="small">No</text>
+        <text x="786" y="635" class="small">-</text>
+        <text x="920" y="635" class="small">$0</text>
+        <text x="1086" y="635" class="small">Yes</text>
+      </g>
+    
+
+      <g>
+        <rect x="58" y="662" width="1164" height="50" rx="9" fill="#081012" stroke="#173f43"/>
+        <circle cx="84" cy="687" r="7" fill="#f97316"/>
+        <text x="106" y="683" class="small strong">CLM-LAUNCH-003</text>
+        <text x="106" y="701" class="tiny">Denial follow-up</text>
+        <text x="342" y="693" class="small">Accepted</text>
+        <text x="486" y="693" class="small">Accepted</text>
+        <text x="650" y="693" class="small">Yes</text>
+        <text x="786" y="693" class="small">16</text>
+        <text x="920" y="693" class="small">$300</text>
+        <text x="1086" y="693" class="small">Yes</text>
+      </g>
+    
+  <rect x="46" y="714" width="1188" height="66" rx="14" fill="#071012" stroke="#164e53"/>
+  <text x="58" y="736" class="readout">3 synthetic claims were traced from 837P build through acknowledgment and remit visibility.</text><text x="58" y="758" class="readout">Clean-claim rate is 33.3%; ACK completion is 100.0%.</text><text x="58" y="780" class="readout">2 claims need workqueue review: 1 clearinghouse rejection and 1 denial follow-up.</text>
+</svg>

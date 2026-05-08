@@ -1,0 +1,85 @@
+{
+  "headline": "Synthetic claims pipeline proof: 837P to 999, 277CA, 835, and workqueue visibility.",
+  "metrics": {
+    "total_claims": 3,
+    "total_billed": 705.0,
+    "total_paid": 148.0,
+    "payment_variance_total": 300.0,
+    "clean_claim_rate": 0.3333333333333333,
+    "ack_completion_rate": 1.0,
+    "denial_rate": 0.5,
+    "workqueue": 2
+  },
+  "stages": [
+    {
+      "label": "837P claim build",
+      "value": 3,
+      "note": "Synthetic claims leave launch."
+    },
+    {
+      "label": "999 accepted",
+      "value": 3,
+      "note": "Implementation ACK visible."
+    },
+    {
+      "label": "277CA accepted",
+      "value": 2,
+      "note": "Rejection separated early."
+    },
+    {
+      "label": "835 remit seen",
+      "value": 2,
+      "note": "Remit and denial linked."
+    },
+    {
+      "label": "Paid / posted",
+      "value": 1,
+      "note": "Clean claim paid."
+    },
+    {
+      "label": "Workqueue",
+      "value": 2,
+      "note": "Owner-ready follow-up."
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CLM-LAUNCH-001",
+      "payer": "SYNTHETIC HEALTH PLAN",
+      "status": "Paid / posted",
+      "999": "Accepted",
+      "277ca": "Accepted",
+      "835": "Yes",
+      "carc": "-",
+      "variance": 0.0,
+      "review": "No"
+    },
+    {
+      "claim_id": "CLM-LAUNCH-002",
+      "payer": "SYNTHETIC HEALTH PLAN",
+      "status": "277CA rejection",
+      "999": "Accepted",
+      "277ca": "Rejected",
+      "835": "No",
+      "carc": "-",
+      "variance": 0.0,
+      "review": "Yes"
+    },
+    {
+      "claim_id": "CLM-LAUNCH-003",
+      "payer": "SYNTHETIC HEALTH PLAN",
+      "status": "Denial follow-up",
+      "999": "Accepted",
+      "277ca": "Accepted",
+      "835": "Yes",
+      "carc": "16",
+      "variance": 300.0,
+      "review": "Yes"
+    }
+  ],
+  "buyer_readout": [
+    "3 synthetic claims were traced from 837P build through acknowledgment and remit visibility.",
+    "Clean-claim rate is 33.3%; ACK completion is 100.0%.",
+    "2 claims need workqueue review: 1 clearinghouse rejection and 1 denial follow-up."
+  ]
+}

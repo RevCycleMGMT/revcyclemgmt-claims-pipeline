@@ -21,6 +21,15 @@ python -m revcyclemgmt_claims.pipelines.ingest_edi --inbox tests/sample_data --w
 python -m revcyclemgmt_claims.pipelines.build_marts --warehouse warehouse
 ```
 
+## Generate Public Proof Artifacts
+
+```bash
+python -m revcyclemgmt_claims.pipelines.proof_artifacts --warehouse warehouse --out output_demo
+cp output_demo/claims_pipeline_map.svg docs/assets/claims-pipeline-map.svg
+```
+
+This produces a GitHub-rendered SVG claim journey and a JSON proof summary from the same synthetic mart output used by the dashboard.
+
 ## Launch Dashboard
 
 ```bash
