@@ -170,4 +170,4 @@ Reason:
 - They prove engineering depth without needing live Optum credentials.
 - They are easy to demo publicly with synthetic files.
 - They make the existing claims-pipeline repo look like the first piece of a real implementation suite.
-- They support future Optum/Change Healthcare, Availity, Waystar, or payer-direct integrations without implying a current vendor partnership.
+- They support future Optum/Change Healthcare, Availity, Waystar, or payer-direct integrations without implying a current official vendor relationship.

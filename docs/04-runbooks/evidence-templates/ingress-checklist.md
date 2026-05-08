@@ -2,7 +2,7 @@
 
 - [ ] Business owner:
 - [ ] Technical owner:
-- [ ] Data class: synthetic | de-identified | production PHI
+- [ ] Data class: synthetic | de-identified | live PHI-bearing data
 - [ ] Transaction types: 837P | 837I | 835 | 999 | 277CA | 270/271 | 276/277
 - [ ] Ingress method: SFTP | S3 | Azure Blob | BigQuery | AS2 | API
 - [ ] Clearinghouse or payer route:
@@ -17,5 +17,5 @@
 
 Notes:
 
-- Any production PHI requires approved agreements, access controls, and retention rules before intake.
+- Any live PHI-bearing data requires approved agreements, access controls, and retention rules before intake.
 - This repository accepts synthetic demo files only.

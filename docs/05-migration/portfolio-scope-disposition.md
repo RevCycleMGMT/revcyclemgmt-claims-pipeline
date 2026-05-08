@@ -32,7 +32,7 @@ These areas are not part of the RevCycleMGMT claims-pipeline portfolio:
 - Population health analytics.
 - Member engagement analytics.
 - Government contracting and PMO positioning.
-- Any production PHI, payer credentials, clearinghouse credentials, app passwords, private keys, or certificates.
+- Any live PHI-bearing data, payer credentials, clearinghouse credentials, app passwords, private keys, or certificates.
 
 ## Public Link Rule
 

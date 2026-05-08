@@ -21,7 +21,7 @@ Never place real patient records, payer files, clearinghouse files, credentials,
 
 ## Claim Workflow Intake Checklist
 
-- [ ] Data class confirmed: synthetic demo, de-identified test data, or production PHI.
+- [ ] Data class confirmed: synthetic demo, de-identified test data, or live PHI-bearing data.
 - [ ] PHI approval path documented before any production file is accepted.
 - [ ] Ingress method selected: SFTP, S3, Azure Blob, BigQuery, AS2, or clearinghouse API.
 - [ ] Source owner and RevCycleMGMT owner assigned.
